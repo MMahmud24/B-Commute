@@ -55,8 +55,7 @@ export default function Schedule() {
   if (loading) return null
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8">
-      <form onSubmit={onSubmit} noValidate className="mx-auto flex w-full max-w-2xl flex-col gap-4">
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">My weekly schedule</h1>
           <Link to="/" className="text-sm font-medium text-indigo-600 hover:underline">
@@ -111,7 +110,6 @@ export default function Schedule() {
         >
           {saving ? 'Saving...' : 'Save schedule'}
         </button>
-      </form>
-    </main>
+    </form>
   )
 }

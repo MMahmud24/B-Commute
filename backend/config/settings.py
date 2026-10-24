@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 import os
 from pathlib import Path
-
+from datetime import timedelta
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -118,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'  # campus time; stored datetimes stay UTC (USE_TZ)
 
 USE_I18N = True
 
@@ -147,4 +147,15 @@ CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
     'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication'],
+}
+
+# Bus timetables (JSON files shipped in the repo, not the database)
+BUS_SCHEDULE_DIR = BASE_DIR.parent / 'data' / 'bus_schedules'
+
+# Dev stub: freeze the planner's clock, e.g. 'monday 08:00'. Leave empty to use the real time.
+TRANSIT_FAKE_NOW = os.environ.get('TRANSIT_FAKE_NOW', '')
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
