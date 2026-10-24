@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { RESIDENCES } from '../lib/residences'
 
 export default function Home() {
   const { user, logout } = useAuth()
@@ -9,6 +10,7 @@ export default function Home() {
       <p className="text-slate-600">
         Signed in as {user?.first_name} {user?.last_name} (@{user?.username})
       </p>
+      <p className="text-sm text-slate-500">Lives at: {RESIDENCES.find((r) => r.value === user?.residence)?.label}</p>
       <Link to="/schedule" className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700">
         Edit my schedule
       </Link>

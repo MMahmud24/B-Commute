@@ -42,7 +42,14 @@ class SignupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username']
+        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'residence']
+        # Only residence can be changed through the profile endpoint for now.
+        read_only_fields = ['id', 'first_name', 'last_name', 'email', 'username']
+
+    def validate_residence(self, value):
+        if not value:
+            raise serializers.ValidationError('Choose where you live.')
+        return value
 
 
 class LoginSerializer(serializers.Serializer):

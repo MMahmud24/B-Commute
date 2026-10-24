@@ -67,3 +67,35 @@ class LoginTests(TestCase):
         token = self.login('ada').json()['access']
         res = self.client.get('/api/auth/me/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(res.json()['username'], 'ada')
+
+
+class ResidenceTests(TestCase):
+    def setUp(self):
+        self.client.post('/api/auth/signup/', SIGNUP, content_type='application/json')
+        token = self.client.post(
+            '/api/auth/login/', {'identifier': 'ada', 'password': SIGNUP['password']}, content_type='application/json'
+        ).json()['access']
+        self.auth = {'HTTP_AUTHORIZATION': f'Bearer {token}'}
+
+    def patch(self, data):
+        return self.client.patch('/api/auth/me/', data, content_type='application/json', **self.auth)
+
+    def test_residence_empty_after_signup(self):
+        self.assertEqual(self.client.get('/api/auth/me/', **self.auth).json()['residence'], '')
+
+    def test_set_residence(self):
+        res = self.patch({'residence': 'uclub'})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(User.objects.get(username='ada').residence, 'uclub')
+
+    def test_invalid_residence_rejected(self):
+        for bad in ('nowhere', ''):
+            self.assertEqual(self.patch({'residence': bad}).status_code, 400)
+
+    def test_other_fields_not_editable(self):
+        self.patch({'residence': 'uclub', 'username': 'hacker', 'email': 'x@y.com'})
+        user = User.objects.get(pk=User.objects.get(username='ada').pk)
+        self.assertEqual((user.username, user.email), ('ada', 'ada@binghamton.edu'))
+
+    def test_requires_auth(self):
+        self.assertEqual(self.client.patch('/api/auth/me/', {'residence': 'uclub'}, content_type='application/json').status_code, 401)

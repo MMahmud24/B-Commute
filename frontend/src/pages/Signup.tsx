@@ -47,7 +47,7 @@ export default function Signup() {
     setSubmitting(true)
     try {
       await signup(form)
-      navigate('/')
+      navigate('/residence')
     } catch (err) {
       setErrors(err instanceof ApiError ? err.fieldErrors : { non_field_errors: ['Something went wrong.'] })
     } finally {

@@ -7,6 +7,7 @@ export interface User {
   last_name: string
   email: string
   username: string
+  residence: string // '' until the user picks one
 }
 
 export interface SignupPayload {
@@ -24,6 +25,7 @@ interface AuthContextValue {
   loading: boolean
   signup: (payload: SignupPayload) => Promise<void>
   login: (identifier: string, password: string) => Promise<void>
+  updateResidence: (residence: string) => Promise<void>
   logout: () => void
 }
 
@@ -80,13 +82,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await login(payload.username, payload.password)
   }
 
+  const updateResidence = async (residence: string) => {
+    setUser(await apiFetch<User>('/auth/me/', { method: 'PATCH', body: JSON.stringify({ residence }), token }))
+  }
+
   const logout = () => {
     writeToken(null)
     setToken(null)
     setUser(null)
   }
 
-  return <AuthContext.Provider value={{ user, token, loading, signup, login, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, token, loading, signup, login, updateResidence, logout }}>{children}</AuthContext.Provider>
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
