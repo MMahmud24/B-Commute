@@ -3,6 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './lib/auth'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import Schedule from './pages/Schedule'
 import Signup from './pages/Signup'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/schedule" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'accounts',
     'transit',
     'carpool',
+    'schedules',
 ]
 
 MIDDLEWARE = [

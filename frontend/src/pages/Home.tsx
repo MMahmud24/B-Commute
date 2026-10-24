@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 
 export default function Home() {
@@ -8,6 +9,9 @@ export default function Home() {
       <p className="text-slate-600">
         Signed in as {user?.first_name} {user?.last_name} (@{user?.username})
       </p>
+      <Link to="/schedule" className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700">
+        Edit my schedule
+      </Link>
       <button onClick={logout} className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-white">
         Log out
       </button>

@@ -20,6 +20,7 @@ export interface SignupPayload {
 
 interface AuthContextValue {
   user: User | null
+  token: string | null
   loading: boolean
   signup: (payload: SignupPayload) => Promise<void>
   login: (identifier: string, password: string) => Promise<void>
@@ -48,16 +49,20 @@ function writeToken(token: string | null) {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string | null>(readToken)
   const [loading, setLoading] = useState(() => readToken() !== null)
 
   // Restore the session from a saved token on first load.
   useEffect(() => {
-    const token = readToken()
     if (!token) return
     apiFetch<User>('/auth/me/', { token })
       .then(setUser)
-      .catch(() => writeToken(null))
+      .catch(() => {
+        writeToken(null)
+        setToken(null)
+      })
       .finally(() => setLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const login = async (identifier: string, password: string) => {
@@ -66,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ identifier, password }),
     })
     writeToken(data.access)
+    setToken(data.access)
     setUser(data.user)
   }
 
@@ -76,10 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     writeToken(null)
+    setToken(null)
     setUser(null)
   }
 
-  return <AuthContext.Provider value={{ user, loading, signup, login, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, token, loading, signup, login, logout }}>{children}</AuthContext.Provider>
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
